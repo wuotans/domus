@@ -1,13 +1,3 @@
-import { Sidebar } from "./Sidebar";
-import Link from "next/link";
-
-export function AppShell({children,title,description}:{children:React.ReactNode,title:string,description?:string}){
-  return <div className="layout">
-    <Sidebar/>
-    <main className="content">
-      <div className="mobile-top"><strong>Domus</strong><Link href="/dashboard">Menu</Link></div>
-      <div className="topbar"><div><h1 className="page-title">{title}</h1>{description&&<div className="muted">{description}</div>}</div></div>
-      {children}
-    </main>
-  </div>
-}
+"use client";
+import {useState} from "react";import {Sidebar} from "./Sidebar";import {Bell,Menu,Search} from "lucide-react";
+export function AppShell({children,title,description}:{children:React.ReactNode,title:string,description?:string}){const[open,setOpen]=useState(false);return <div className="layout"><Sidebar/>{open&&<><div className="mobile-overlay" onClick={()=>setOpen(false)}/><Sidebar mobile onClose={()=>setOpen(false)}/></>}<main className="content"><div className="mobile-top"><button className="icon-btn" onClick={()=>setOpen(true)}><Menu size={22}/></button><strong>Domus</strong><button className="icon-btn"><Bell size={20}/></button></div><div className="topbar"><div><h1 className="page-title">{title}</h1>{description&&<div className="muted">{description}</div>}</div><div className="top-actions"><div className="search-pill"><Search size={16}/><span>Gestão inteligente</span></div><button className="icon-btn notification"><Bell size={19}/><i/></button></div></div>{children}</main></div>}
