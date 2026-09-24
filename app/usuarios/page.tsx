@@ -6,7 +6,7 @@ export default function Page(){
   const [items,setItems]=useState<any[]>([]);
   const [f,setF]=useState({name:"",email:"",password:"",role:"CONSULTA"});
   const load=()=>fetch("/api/users").then(r=>r.json()).then(setItems);
-  useEffect(load,[]);
+  useEffect(()=>{ void load(); },[]);
   async function add(e:React.FormEvent){
     e.preventDefault();
     await fetch("/api/users",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(f)});
