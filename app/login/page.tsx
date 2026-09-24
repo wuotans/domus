@@ -1,23 +1,2 @@
-"use client";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-
-export default function Login(){
-  const router=useRouter();
-  const [email,setEmail]=useState("admin@domus.local");
-  const [password,setPassword]=useState("admin123");
-  const [error,setError]=useState("");
-  const submit=async(e:React.FormEvent)=>{
-    e.preventDefault(); setError("");
-    const r=await signIn("credentials",{email,password,redirect:false});
-    if(r?.ok) router.push("/dashboard"); else setError("E-mail ou senha inválidos.");
-  };
-  return <div className="login-wrap"><form className="login-card" onSubmit={submit}>
-    <h1>Domus</h1><p className="muted">Gestão completa do condomínio</p>
-    <div className="field"><label>E-mail</label><input value={email} onChange={e=>setEmail(e.target.value)} type="email"/></div>
-    <div className="field" style={{marginTop:12}}><label>Senha</label><input value={password} onChange={e=>setPassword(e.target.value)} type="password"/></div>
-    {error&&<p style={{color:"#b91c1c"}}>{error}</p>}
-    <button className="btn" style={{width:"100%",marginTop:18}}>Entrar</button>
-  </form></div>
-}
+"use client";import {useState} from "react";import {signIn} from "next-auth/react";import {useRouter} from "next/navigation";import {Building2,Eye,EyeOff,LockKeyhole,Mail,ShieldCheck,Sparkles} from "lucide-react";
+export default function Login(){const router=useRouter();const[email,setEmail]=useState("admin@domus.local");const[password,setPassword]=useState("admin123");const[error,setError]=useState("");const[show,setShow]=useState(false);const[loading,setLoading]=useState(false);const submit=async(e:React.FormEvent)=>{e.preventDefault();setError("");setLoading(true);const r=await signIn("credentials",{email,password,redirect:false});setLoading(false);if(r?.ok)router.push("/dashboard");else setError("E-mail ou senha inválidos.")};return <div className="login-page"><section className="login-hero"><div className="login-brand"><Building2/><strong>Domus</strong></div><div className="login-copy"><span className="login-kicker"><Sparkles size={16}/> Gestão inteligente</span><h1>Seu condomínio,<br/>mais simples de administrar.</h1><p>Finanças, manutenções, assembleias e documentos reunidos em uma experiência clara e moderna.</p><div className="login-trust"><ShieldCheck/><span><strong>Controle e transparência</strong><small>Informações organizadas para uma gestão eficiente.</small></span></div></div><div className="hero-orb one"/><div className="hero-orb two"/></section><section className="login-form-side"><form className="login-card premium" onSubmit={submit}><div className="login-mobile-brand"><Building2/><strong>Domus</strong></div><span className="eyebrow">Bem-vindo de volta</span><h2>Acesse sua conta</h2><p className="muted">Entre para acompanhar a gestão do condomínio.</p><div className="field input-icon"><label>E-mail</label><div><Mail size={18}/><input value={email} onChange={e=>setEmail(e.target.value)} type="email" required/></div></div><div className="field input-icon"><label>Senha</label><div><LockKeyhole size={18}/><input value={password} onChange={e=>setPassword(e.target.value)} type={show?"text":"password"} required/><button type="button" onClick={()=>setShow(!show)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></div>{error&&<div className="form-error">{error}</div>}<button className="btn login-submit" disabled={loading}>{loading?"Entrando...":"Entrar no Domus"}</button><small className="login-help">Acesso restrito à administração do condomínio.</small></form></section></div>}
