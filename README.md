@@ -32,7 +32,8 @@ Sistema completo para gestão de condomínios.
 ```bash
 cp .env.example .env
 npm install
-npx prisma db push
+npm run db:generate
+npm run db:push
 npm run db:seed
 npm run dev
 ```
@@ -51,6 +52,20 @@ admin123
 ```
 
 > Troque a senha após o primeiro acesso.
+
+## Se você já tinha instalado antes desta correção
+
+Atualize a branch e reinstale as dependências:
+
+```bash
+git pull
+rm -rf node_modules package-lock.json
+npm install
+npm run db:generate
+npm run db:push
+npm run db:seed
+npm run dev
+```
 
 ## Produção
 
