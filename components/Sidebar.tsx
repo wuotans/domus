@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, WalletCards, ReceiptText, ArrowLeftRight, Tags, Wrench, CalendarDays, Users, ScrollText, FileBarChart2 } from "lucide-react";
+import { LayoutDashboard, WalletCards, ReceiptText, ArrowLeftRight, Tags, Wrench, CalendarDays, Users, ScrollText, FileBarChart2, UserCog, Paperclip } from "lucide-react";
 
 const items = [
   ["/dashboard","Dashboard",LayoutDashboard],
@@ -7,9 +7,11 @@ const items = [
   ["/contas-receber","Contas a receber",ReceiptText],
   ["/movimentacoes","Movimentações",ArrowLeftRight],
   ["/categorias","Categorias",Tags],
+  ["/comprovantes","Comprovantes",Paperclip],
   ["/manutencoes","Manutenções",Wrench],
   ["/calendario","Calendário",CalendarDays],
   ["/assembleias","Assembleias",Users],
+  ["/usuarios","Usuários",UserCog],
   ["/historico","Histórico",ScrollText],
   ["/relatorios","Relatórios",FileBarChart2],
 ];
