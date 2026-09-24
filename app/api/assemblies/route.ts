@@ -1,0 +1,3 @@
+import { prisma } from "@/lib/prisma";import { NextResponse } from "next/server";
+export async function GET(){return NextResponse.json(await prisma.assembly.findMany({include:{agendaItems:{orderBy:{order:"asc"}}},orderBy:{scheduledAt:"desc"}}))}
+export async function POST(req:Request){const b=await req.json();const agenda=(b.agenda||[]).filter((x:string)=>x.trim()).map((title:string,i:number)=>({title,order:i+1}));return NextResponse.json(await prisma.assembly.create({data:{title:b.title,description:b.description||null,scheduledAt:new Date(b.scheduledAt),location:b.location||null,agendaItems:{create:agenda}}}),{status:201})}

@@ -1,0 +1,40 @@
+"use client";
+import { useState } from "react";
+import { Sidebar } from "./Sidebar";
+import { Bell, Menu } from "lucide-react";
+
+export function AppShell({ children, title, description }: { children: React.ReactNode; title: string; description?: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="layout">
+      <Sidebar />
+      {open && (
+        <>
+          <div className="mobile-overlay" onClick={() => setOpen(false)} />
+          <Sidebar mobile onClose={() => setOpen(false)} />
+        </>
+      )}
+
+      <main className="content">
+        <div className="mobile-top">
+          <button className="icon-btn" onClick={() => setOpen(true)}><Menu size={22} /></button>
+          <strong>Domus</strong>
+          <button className="icon-btn"><Bell size={20} /></button>
+        </div>
+
+        <div className="topbar">
+          <div>
+            <h1 className="page-title">{title}</h1>
+            {description && <div className="muted">{description}</div>}
+          </div>
+          <div className="top-actions">
+            <button className="icon-btn notification" aria-label="Notificações"><Bell size={19} /><i /></button>
+          </div>
+        </div>
+
+        {children}
+      </main>
+    </div>
+  );
+}

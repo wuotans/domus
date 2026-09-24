@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  SINDICO
+  FINANCEIRO
+  CONSULTA
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum AccountStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum AssemblyStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum MaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CONSULTA)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  movements    Movement[]
+  auditLogs    AuditLog[]
+}
+
+model Category {
+  id           String          @id @default(cuid())
+  name         String          @unique
+  type         TransactionType
+  color        String?
+  active       Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  payables     AccountPayable[]
+  receivables  AccountReceivable[]
+  movements    Movement[]
+}
+
+model AccountPayable {
+  id            String        @id @default(cuid())
+  description   String
+  supplier      String?
+  amount        Decimal
+  dueDate       DateTime
+  paymentDate   DateTime?
+  status        AccountStatus @default(PENDING)
+  notes         String?
+  categoryId    String
+  category      Category      @relation(fields: [categoryId], references: [id])
+  attachments   Attachment[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model AccountReceivable {
+  id            String        @id @default(cuid())
+  description   String
+  payer         String?
+  amount        Decimal
+  dueDate       DateTime
+  receivedDate  DateTime?
+  status        AccountStatus @default(PENDING)
+  notes         String?
+  categoryId    String
+  category      Category      @relation(fields: [categoryId], references: [id])
+  attachments   Attachment[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Movement {
+  id          String          @id @default(cuid())
+  type        TransactionType
+  description String
+  amount      Decimal
+  date        DateTime
+  categoryId  String
+  category    Category        @relation(fields: [categoryId], references: [id])
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  reference   String?
+  notes       String?
+  attachments Attachment[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model Attachment {
+  id                  String             @id @default(cuid())
+  filename            String
+  originalName        String
+  mimeType            String
+  size                Int
+  path                String
+  accountPayableId    String?
+  accountPayable      AccountPayable?    @relation(fields: [accountPayableId], references: [id], onDelete: Cascade)
+  accountReceivableId String?
+  accountReceivable   AccountReceivable? @relation(fields: [accountReceivableId], references: [id], onDelete: Cascade)
+  movementId          String?
+  movement            Movement?          @relation(fields: [movementId], references: [id], onDelete: Cascade)
+  createdAt           DateTime           @default(now())
+}
+
+model Maintenance {
+  id          String            @id @default(cuid())
+  title       String
+  description String?
+  provider    String?
+  cost        Decimal?
+  scheduledAt DateTime
+  completedAt DateTime?
+  status      MaintenanceStatus @default(SCHEDULED)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Assembly {
+  id          String         @id @default(cuid())
+  title       String
+  description String?
+  scheduledAt DateTime
+  location    String?
+  status      AssemblyStatus @default(SCHEDULED)
+  minutes     String?
+  agendaItems AgendaItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model AgendaItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  order       Int
+  decision    String?
+  assemblyId  String
+  assembly    Assembly @relation(fields: [assemblyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
